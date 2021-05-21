@@ -59,6 +59,8 @@ public class Bubble extends Parent implements GameLifeCycle {
     private final ReplayablePseudoRandom randomGenerator;
     private final ReplayablePseudoRandom randomFragmentsGenerator = new ReplayablePseudoRandom();;
 
+    private boolean inTarget = false;
+
     public Bubble(final IGameContext gameContext, final BubbleType type, final Stats stats, final BubblesGameVariant direction) {
         this.gameContext = gameContext;
         this.type = type;
@@ -142,8 +144,12 @@ public class Bubble extends Parent implements GameLifeCycle {
         enterEvent = e -> {
 
             if (e.getEventType() == MouseEvent.MOUSE_ENTERED || e.getEventType() == GazeEvent.GAZE_ENTERED) {
-
+                inTarget = true;
                 enter((Circle) e.getTarget());
+            }
+
+            if (e.getEventType() == MouseEvent.MOUSE_EXITED || e.getEventType() == GazeEvent.GAZE_EXITED){
+                inTarget = false;
             }
         };
 
@@ -228,19 +234,31 @@ public class Bubble extends Parent implements GameLifeCycle {
 
     private void enter(final Circle target) {
 
-        final double centerX = target.getCenterX();
-        final double centerY = target.getCenterY();
+        final Dimension2D screenDimension = gameContext.getGamePanelDimensionProvider().getDimension2D();
+        if (target.getRadius()>Math.min(screenDimension.getHeight()/7,screenDimension.getWidth()/7)) {
+            final double centerX = target.getCenterX();
+            final double centerY = target.getCenterY();
 
-        gameContext.getGazeDeviceManager().removeEventFilter(target);
-        this.getChildren().remove(target);
+            gameContext.getGazeDeviceManager().removeEventFilter(target);
+            this.getChildren().remove(target);
 
-        stats.incrementNumberOfGoalsReached();
+            stats.incrementNumberOfGoalsReached();
 
-        gameContext.updateScore(stats,this);
+            gameContext.updateScore(stats, this);
 
-        explose(centerX, centerY); // instead of C to avoid wrong position of the explosion
+            explose(centerX, centerY); // instead of C to avoid wrong position of the explosion
 
-        this.newCircle();
+            this.newCircle();
+        } else {
+            PauseTransition Wait = new PauseTransition(Duration.millis(5));
+            Wait.setOnFinished(WaitEvent -> {
+                if (inTarget) {
+                    target.setRadius(target.getRadius() * 1.03);
+                    enter(target);
+                }
+            });
+            Wait.play();
+        }
     }
 
     private void newCircle() {
@@ -257,6 +275,8 @@ public class Bubble extends Parent implements GameLifeCycle {
         circle.addEventHandler(GazeEvent.ANY, enterEvent);
 
         moveCircle(circle);
+        decreaseSize(circle);
+
     }
 
     private Circle buildCircle() {
@@ -264,7 +284,7 @@ public class Bubble extends Parent implements GameLifeCycle {
         final Circle newCircle = new Circle();
         final Dimension2D screenDimension = gameContext.getGamePanelDimensionProvider().getDimension2D();
         double maxRadius = Math.min(screenDimension.getWidth()/12,screenDimension.getHeight()/12);
-        double minRadius =  Math.min(screenDimension.getHeight()/30,screenDimension.getWidth()/30);
+        double minRadius =  Math.min(screenDimension.getHeight()/20,screenDimension.getWidth()/20);
         final double radius = (maxRadius - minRadius) * randomGenerator.nextDouble() + minRadius;
 
         newCircle.setRadius(radius);
@@ -331,6 +351,18 @@ public class Bubble extends Parent implements GameLifeCycle {
         timeline.rateProperty().bind(gameContext.getAnimationSpeedRatioSource().getSpeedRatioProperty());
 
         timeline.play();
+    }
+
+    private void decreaseSize(final Circle target){
+        final Dimension2D screenDimension = gameContext.getGamePanelDimensionProvider().getDimension2D();
+        PauseTransition Wait = new PauseTransition(Duration.millis(15));
+        Wait.setOnFinished(WaitEvent -> {
+            if (target.getRadius()>Math.min(screenDimension.getWidth()/20,screenDimension.getHeight()/20)) {
+                target.setRadius(target.getRadius() / 1.007);
+            }
+            decreaseSize(target);
+        });
+        Wait.play();
     }
 
 }
