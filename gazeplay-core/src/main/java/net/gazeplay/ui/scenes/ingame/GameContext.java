@@ -17,10 +17,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.gazeplay.GameLifeCycle;
-import net.gazeplay.GamePanelDimensionProvider;
-import net.gazeplay.GazePlay;
-import net.gazeplay.IGameContext;
+import net.gazeplay.*;
 import net.gazeplay.commons.configuration.ActiveConfigurationContext;
 import net.gazeplay.commons.configuration.AnimationSpeedRatioSource;
 import net.gazeplay.commons.configuration.Configuration;
@@ -256,6 +253,7 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
             getGazePlay().onGameLaunch(this);
             stats.reset();
             currentGame.launch();
+            //GameSpecSource.getGameSpec();
         };
 
         CustomButton restartButton = new CustomButton("data/common/images/continue.png", screenDimension);
