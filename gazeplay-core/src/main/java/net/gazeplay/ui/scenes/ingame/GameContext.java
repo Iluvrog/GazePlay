@@ -258,8 +258,8 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
             currentGame.launch();
         };
 
-        CustomButton continueButton = new CustomButton("data/common/images/continue.png", screenDimension);
-        continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        CustomButton restartButton = new CustomButton("data/common/images/continue.png", screenDimension);
+        restartButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
 
         ProgressButton progressButton = new ProgressButton();
         progressButton.assignIndicator(event, 1000);
@@ -267,7 +267,7 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
         progressButton.getButton().setVisible(false);
         progressButton.getButton().setRadius(50);
 
-        menuHBox.getChildren().add(new StackPane(continueButton, progressButton));
+        menuHBox.getChildren().add(new StackPane(restartButton, progressButton));
 
         homeButton = createHomeButtonInGameScreen(gazePlay, stats, currentGame);
         menuHBox.getChildren().add(homeButton);
@@ -306,8 +306,8 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
             currentGame.launch();
         };
 
-        CustomButton continueButton = new CustomButton("data/common/images/continue.png", screenDimension);
-        continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        CustomButton restartButton = new CustomButton("data/common/images/continue.png", screenDimension);
+        restartButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
 
         ProgressButton progressButton = new ProgressButton();
         progressButton.assignIndicator(event, 1000);
@@ -315,7 +315,7 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
         progressButton.getButton().setVisible(false);
         progressButton.getButton().setRadius(50);
 
-        menuHBox.getChildren().add(new StackPane(continueButton, progressButton));
+        menuHBox.getChildren().add(new StackPane(restartButton, progressButton));
 
         homeButton = createHomeButtonInGameScreenWithoutHandler(gazePlay);
         menuHBox.getChildren().add(homeButton);
