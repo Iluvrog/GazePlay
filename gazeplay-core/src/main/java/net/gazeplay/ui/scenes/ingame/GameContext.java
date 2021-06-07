@@ -11,10 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.NonNull;
@@ -36,6 +33,7 @@ import net.gazeplay.commons.ui.Translator;
 import net.gazeplay.commons.utils.*;
 import net.gazeplay.commons.utils.games.ForegroundSoundsUtils;
 import net.gazeplay.commons.utils.stats.Stats;
+import net.gazeplay.components.ProgressButton;
 import net.gazeplay.components.RandomPositionGenerator;
 import net.gazeplay.ui.AnimationSpeedRatioControl;
 import net.gazeplay.ui.FixationLengthControl;
@@ -252,6 +250,25 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
         I18NButton toggleFullScreenButtonInGameScreen = createToggleFullScreenButtonInGameScreen(gazePlay);
         menuHBox.getChildren().add(toggleFullScreenButtonInGameScreen);
 
+        Dimension2D screenDimension = getGazePlay().getCurrentScreenDimensionSupplier().get();
+
+        EventHandler event = e -> {
+            getGazePlay().onGameLaunch(this);
+            stats.reset();
+            currentGame.launch();
+        };
+
+        CustomButton continueButton = new CustomButton("data/common/images/continue.png", screenDimension);
+        continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+
+        ProgressButton progressButton = new ProgressButton();
+        progressButton.assignIndicator(event, 1000);
+        progressButton.active();
+        progressButton.getButton().setVisible(false);
+        progressButton.getButton().setRadius(50);
+
+        menuHBox.getChildren().add(new StackPane(continueButton, progressButton));
+
         homeButton = createHomeButtonInGameScreen(gazePlay, stats, currentGame);
         menuHBox.getChildren().add(homeButton);
     }
@@ -280,6 +297,25 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
 
         I18NButton toggleFullScreenButtonInGameScreen = createToggleFullScreenButtonInGameScreen(gazePlay);
         menuHBox.getChildren().add(toggleFullScreenButtonInGameScreen);
+
+        Dimension2D screenDimension = getGazePlay().getCurrentScreenDimensionSupplier().get();
+
+        EventHandler event = e -> {
+            getGazePlay().onGameLaunch(this);
+            stats.reset();
+            currentGame.launch();
+        };
+
+        CustomButton continueButton = new CustomButton("data/common/images/continue.png", screenDimension);
+        continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+
+        ProgressButton progressButton = new ProgressButton();
+        progressButton.assignIndicator(event, 1000);
+        progressButton.active();
+        progressButton.getButton().setVisible(false);
+        progressButton.getButton().setRadius(50);
+
+        menuHBox.getChildren().add(new StackPane(continueButton, progressButton));
 
         homeButton = createHomeButtonInGameScreenWithoutHandler(gazePlay);
         menuHBox.getChildren().add(homeButton);
