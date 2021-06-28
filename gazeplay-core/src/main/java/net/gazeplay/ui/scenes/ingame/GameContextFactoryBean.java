@@ -20,6 +20,7 @@ import net.gazeplay.GazePlay;
 import net.gazeplay.commons.configuration.ActiveConfigurationContext;
 import net.gazeplay.commons.configuration.BackgroundStyleVisitor;
 import net.gazeplay.commons.configuration.Configuration;
+import net.gazeplay.commons.gaze.devicemanager.GazeDeviceManager;
 import net.gazeplay.commons.gaze.devicemanager.GazeDeviceManagerFactory;
 import net.gazeplay.commons.soundsmanager.SoundsManagerFactory;
 import net.gazeplay.commons.ui.Translator;
@@ -206,7 +207,10 @@ public class GameContextFactoryBean implements FactoryBean<GameContext> {
         root.getChildren().add(gamingRoot);
         root.getChildren().add(configPane);
 
-        return new GameContext(gazePlay, translator, root, gamingRoot, bravo, controlPanel, gazeDeviceManagerFactory.get(), soundsManagerFactory.get(), configPane);
+        GazeDeviceManager gazeDeviceManager = gazeDeviceManagerFactory.get();
+        gazeDeviceManager.addEventFilter(Bbt);
+
+        return new GameContext(gazePlay, translator, root, gamingRoot, bravo, controlPanel, gazeDeviceManager, soundsManagerFactory.get(), configPane);
     }
 
     private void buttonTransparentHandler(Button bt, ProgressButton Bbt) {
