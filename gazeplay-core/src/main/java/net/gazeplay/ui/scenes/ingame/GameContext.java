@@ -306,6 +306,8 @@ public class GameContext extends GraphicalContext<Pane> implements IGameContext 
         Bhome.getButton().setVisible(false);
         Bhome.getButton().setRadius(50);
 
+        this.getGazeDeviceManager().addEventFilter(Bhome);
+
         Phome.getChildren().addAll(homeButton, Bhome);
 
         return Phome;
